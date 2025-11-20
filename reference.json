@@ -1,0 +1,27 @@
+{
+  "tsh": {
+    "name": "TSH",
+    "range": "0.38-5.33",
+    "unit": "mIU/L"
+  },
+  "ft3": {
+    "name": "T3",
+    "range": "3.28-6.47",
+    "unit": "pmol/L"
+  },
+  "ft4": {
+    "name": "T4",
+    "range": "7.64-16.03",
+    "unit": "pmol/L"
+  },
+  "tg": {
+    "name": "TG",
+    "range": "1.59-50.03",
+    "unit": "ng/mL"
+  },
+  "atg": {
+    "name": "A-TG",
+    "range": "<4",
+    "unit": "IU/mL"
+  }
+}

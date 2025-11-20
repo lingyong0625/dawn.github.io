@@ -1,0 +1,248 @@
+[
+  {
+    "id": 1763554804656,
+    "timestamp": "2025/11/19 20:20:04",
+    "checkTime": "2025-11-15",
+    "notes": "深圳市人民医院龙华分院",
+    "tsh": {
+      "name": "TSH",
+      "des": "促甲状腺激素",
+      "value": "0.277",
+      "range": "0.56-5.91",
+      "unit": "mIU/L"
+    },
+    "ft3": {
+      "name": "FT3",
+      "des": "游离三碘甲状腺原氨酸",
+      "value": "5.62",
+      "range": "3.53-7.37",
+      "unit": "pmol/L"
+    },
+    "ft4": {
+      "name": "FT4",
+      "des": "游离甲状腺素",
+      "value": "14.34",
+      "range": "7.98-16.02",
+      "unit": "pmol/L"
+    },
+    "tg": {
+      "name": "TG",
+      "des": "甲状腺球蛋白",
+      "value": "0.1",
+      "range": "1.59-50.03",
+      "unit": "ng/mL"
+    },
+    "atg": {
+      "name": "A-TG",
+      "des": "抗甲状腺球蛋白抗体",
+      "value": "8.7",
+      "range": "<4",
+      "unit": "IU/mL"
+    }
+  },
+  {
+    "id": 1763555182396,
+    "timestamp": "2025/11/19 20:26:22",
+    "checkTime": "2025-05-11",
+    "notes": "深圳市人民医院龙华分院",
+    "tsh": {
+      "name": "TSH",
+      "des": "促甲状腺激素",
+      "value": "1.97",
+      "range": "0.56-5.91",
+      "unit": "mIU/L"
+    },
+    "ft3": {
+      "name": "FT3",
+      "des": "游离三碘甲状腺原氨酸",
+      "value": "6.28",
+      "range": "3.53-7.37",
+      "unit": "pmol/L"
+    },
+    "ft4": {
+      "name": "FT4",
+      "des": "游离甲状腺素",
+      "value": "13.88",
+      "range": "7.98-16.02",
+      "unit": "pmol/L"
+    },
+    "tg": {
+      "name": "TG",
+      "des": "甲状腺球蛋白",
+      "value": "0.1",
+      "range": "1.59-50.03",
+      "unit": "ng/mL"
+    },
+    "atg": {
+      "name": "A-TG",
+      "des": "抗甲状腺球蛋白抗体",
+      "value": "9.3",
+      "range": "<4",
+      "unit": "IU/mL"
+    }
+  },
+  {
+    "id": 1763555391049,
+    "timestamp": "2025/11/19 20:29:51",
+    "checkTime": "2024-08-18",
+    "notes": "深圳市人民医院龙华分院",
+    "tsh": {
+      "name": "TSH",
+      "des": "促甲状腺激素",
+      "value": "0.71",
+      "range": "0.6-4.9",
+      "unit": "mIU/L"
+    },
+    "ft3": {
+      "name": "FT3",
+      "des": "游离三碘甲状腺原氨酸",
+      "value": "5.81",
+      "range": "4-6.1",
+      "unit": "pmol/L"
+    },
+    "ft4": {
+      "name": "FT4",
+      "des": "游离甲状腺素",
+      "value": "13.33",
+      "range": "8.5-14.5",
+      "unit": "pmol/L"
+    },
+    "tg": {
+      "name": "TG",
+      "des": "甲状腺球蛋白",
+      "value": "0.1",
+      "range": "1.59-50.03",
+      "unit": "ng/mL"
+    },
+    "atg": {
+      "name": "A-TG",
+      "des": "抗甲状腺球蛋白抗体",
+      "value": "3.2",
+      "range": "<4",
+      "unit": "IU/mL"
+    }
+  },
+  {
+    "id": 1763555473009,
+    "timestamp": "2025/11/19 20:31:13",
+    "checkTime": "2024-02-03",
+    "notes": "深圳市人民医院龙华分院",
+    "tsh": {
+      "name": "TSH",
+      "des": "促甲状腺激素",
+      "value": "0.03",
+      "range": "0.6-4.9",
+      "unit": "mIU/L"
+    },
+    "ft3": {
+      "name": "FT3",
+      "des": "游离三碘甲状腺原氨酸",
+      "value": "6.17",
+      "range": "4-6.1",
+      "unit": "pmol/L"
+    },
+    "ft4": {
+      "name": "FT4",
+      "des": "游离甲状腺素",
+      "value": "16.5",
+      "range": "8.5-14.5",
+      "unit": "pmol/L"
+    },
+    "tg": {
+      "name": "TG",
+      "des": "甲状腺球蛋白",
+      "value": "0.1",
+      "range": "1.59-50.03",
+      "unit": "ng/mL"
+    },
+    "atg": {
+      "name": "A-TG",
+      "des": "抗甲状腺球蛋白抗体",
+      "value": "3.1",
+      "range": "<4",
+      "unit": "IU/mL"
+    }
+  },
+  {
+    "id": 1763555596990,
+    "timestamp": "2025/11/19 20:33:16",
+    "checkTime": "2023-11-11",
+    "notes": "深圳市人民医院龙华分院",
+    "tsh": {
+      "name": "TSH",
+      "des": "促甲状腺激素",
+      "value": "0.48",
+      "range": "0.38-5.33",
+      "unit": "mIU/L"
+    },
+    "ft3": {
+      "name": "FT3",
+      "des": "游离三碘甲状腺原氨酸",
+      "value": "6.2",
+      "range": "3.28-6.47",
+      "unit": "pmol/L"
+    },
+    "ft4": {
+      "name": "FT4",
+      "des": "游离甲状腺素",
+      "value": "14.41",
+      "range": "7.64-16.03",
+      "unit": "pmol/L"
+    },
+    "tg": {
+      "name": "TG",
+      "des": "甲状腺球蛋白",
+      "value": "0.1",
+      "range": "1.59-50.03",
+      "unit": "ng/mL"
+    },
+    "atg": {
+      "name": "A-TG",
+      "des": "抗甲状腺球蛋白抗体",
+      "value": "2.7",
+      "range": "<4",
+      "unit": "IU/mL"
+    }
+  },
+  {
+    "id": 1763554539160,
+    "timestamp": "2025/11/19 20:15:39",
+    "checkTime": "2022-09-18",
+    "notes": "深圳市人民医院龙华分院",
+    "tsh": {
+      "name": "TSH",
+      "des": "促甲状腺激素",
+      "value": "0.38",
+      "range": "0.38-5.33",
+      "unit": "mIU/L"
+    },
+    "ft3": {
+      "name": "FT3",
+      "des": "游离三碘甲状腺原氨酸",
+      "value": "6.77",
+      "range": "3.28-6.47",
+      "unit": "pmol/L"
+    },
+    "ft4": {
+      "name": "FT4",
+      "des": "游离甲状腺素",
+      "value": "15.19",
+      "range": "7.64-16.03",
+      "unit": "pmol/L"
+    },
+    "tg": {
+      "name": "TG",
+      "des": "甲状腺球蛋白",
+      "value": "0.1",
+      "range": "1.59-50.03",
+      "unit": "ng/mL"
+    },
+    "atg": {
+      "name": "A-TG",
+      "des": "抗甲状腺球蛋白抗体",
+      "value": "4.8",
+      "range": "<4",
+      "unit": "IU/mL"
+    }
+  }
+]

@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <title>复查记录</title>
+        <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                background: #f5f5f5;
+                padding: 20px;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                color: #333;
+                margin-bottom: 30px;
+            }
+            h2 {
+                color: #555;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #4caf50;
+                padding-bottom: 10px;
+            }
+
+            .form-section {
+                background: #f9f9f9;
+                padding: 20px;
+                border-radius: 4px;
+                margin-bottom: 20px;
+            }
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 15px;
+                margin-bottom: 15px;
+            }
+            .form-group {
+                display: flex;
+                flex-direction: column;
+            }
+            label {
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: #555;
+            }
+            .form-hint {
+                font-size: 12px;
+                font-weight: normal;
+                color: #999;
+                margin-top: 3px;
+            }
+            input,
+            select,
+            textarea {
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+
+            .button-group {
+                display: flex;
+                gap: 10px;
+                margin-top: 20px;
+            }
+            button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+            .btn-add {
+                background: #4caf50;
+                color: white;
+            }
+            .btn-add:hover {
+                background: #45a049;
+            }
+            .btn-edit {
+                background: #4caf50;
+                color: white;
+                font-size: 12px;
+                padding: 5px 10px;
+                margin-right: 5px;
+            }
+            .btn-edit:hover {
+                background: #45a049;
+            }
+            .btn-delete {
+                background: #f44336;
+                color: white;
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+            .btn-delete:hover {
+                background: #da190b;
+            }
+
+            /* 表格样式 */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th {
+                background: #4caf50;
+                color: white;
+                padding: 12px;
+                text-align: left;
+                font-weight: bold;
+            }
+            td {
+                padding: 12px;
+                border-bottom: 1px solid #ddd;
+            }
+            tr:hover {
+                background: #f5f5f5;
+            }
+
+            /* Message 窗口上中位置显示样式 */
+            .message {
+                position: fixed;
+                top: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 15px 30px;
+                border-radius: 4px;
+                display: none;
+                z-index: 1000;
+                min-width: 300px;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                animation: fadeInDown 0.3s ease-in-out;
+                font-weight: 500;
+                font-size: 16px;
+            }
+
+            @keyframes fadeInDown {
+                from {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+            }
+
+            .success {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            .error {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+
+            /* 模态框样式 */
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 2000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+            }
+
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto;
+                padding: 30px;
+                border-radius: 8px;
+                width: 90%;
+                max-width: 400px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                animation: slideDown 0.3s ease-out;
+            }
+
+            #editRecordModal .modal-content {
+                max-width: 850px;
+                margin: 6.5% auto;
+            }
+
+            @keyframes slideDown {
+                from {
+                    transform: translateY(-50px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .modal-header {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+            .modal-body {
+                margin-bottom: 20px;
+            }
+
+            .modal-body .form-group {
+                margin-bottom: 15px;
+            }
+
+            .modal-footer {
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+            }
+
+            .modal-footer button {
+                padding: 8px 20px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .btn-confirm {
+                background: #4caf50;
+                color: white;
+            }
+
+            .btn-confirm:hover {
+                background: #45a049;
+            }
+
+            .btn-cancel {
+                background: #ccc;
+                color: #333;
+            }
+
+            .btn-cancel:hover {
+                background: #bbb;
+            }
+
+            .modal-info {
+                background: #f0f8ff;
+                border-left: 4px solid #4caf50;
+                padding: 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                margin-bottom: 15px;
+                color: #666;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 40px;
+                color: #999;
+            }
+
+            .chart-container {
+                width: 800px;
+                height: 400px;
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+        <!-- 编辑参考值模态框 -->
+        <div
+            id="editReferenceModal"
+            class="modal"
+        >
+            <div class="modal-content">
+                <div
+                    class="modal-header"
+                    id="modalTitleToReference"
+                >
+                    编辑检查项
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>参考值范围</label>
+                        <input
+                            type="text"
+                            id="modalRange"
+                            placeholder="如: 0.27-4.2"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label>单位</label>
+                        <input
+                            type="text"
+                            id="modalUnit"
+                            placeholder="如: mIU/L"
+                        />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        class="btn-confirm"
+                        onclick="confirmEditToReference()"
+                    >
+                        确认
+                    </button>
+                    <button
+                        class="btn-cancel"
+                        onclick="closeModalToReference()"
+                    >
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 编辑当前项模态框 -->
+        <div
+            id="editRecordModal"
+            class="modal"
+        >
+            <div class="modal-content">
+                <div
+                    class="modal-header"
+                    id="modalTitleToRecord"
+                >
+                    编辑当前项
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>检查时间</label>
+                            <input
+                                type="date"
+                                id="checkTimeToRecord"
+                                required
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>备注</label>
+                            <input
+                                type="text"
+                                id="notesToRecord"
+                                placeholder="输入备注信息"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label
+                                >TSH<br /><span style="font-size: 12px; font-weight: normal"
+                                    >促甲状腺激素</span
+                                ></label
+                            >
+                            <input
+                                type="number"
+                                id="tshToRecord"
+                                step="0.01"
+                                placeholder="直接输入数值"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label
+                                >FT3<br /><span style="font-size: 12px; font-weight: normal"
+                                    >游离三碘甲状腺原氨酸</span
+                                ></label
+                            >
+                            <input
+                                type="number"
+                                id="ft3ToRecord"
+                                step="0.01"
+                                placeholder="游离三碘甲状腺原氨酸"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label
+                                >FT4<br /><span style="font-size: 12px; font-weight: normal"
+                                    >游离甲状腺素</span
+                                ></label
+                            >
+                            <input
+                                type="number"
+                                id="ft4ToRecord"
+                                step="0.01"
+                                placeholder="游离甲状腺素"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label
+                                >TG<br /><span style="font-size: 12px; font-weight: normal"
+                                    >甲状腺球蛋白</span
+                                ></label
+                            >
+                            <input
+                                type="number"
+                                id="tgToRecord"
+                                step="0.01"
+                                placeholder="甲状腺球蛋白"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label
+                                >A-TG<br /><span style="font-size: 12px; font-weight: normal"
+                                    >抗甲状腺球蛋白抗体</span
+                                ></label
+                            >
+                            <input
+                                type="number"
+                                id="atgToRecord"
+                                step="0.01"
+                                placeholder="抗甲状腺球蛋白抗体"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        class="btn-confirm"
+                        onclick="confirmEditToRecord()"
+                    >
+                        确认
+                    </button>
+                    <button
+                        class="btn-cancel"
+                        onclick="closeModalToRecord()"
+                    >
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="form-section">
+                <h2>➕ 新增检查记录</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>检查时间</label>
+                        <input
+                            type="date"
+                            id="checkTime"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <input
+                            type="text"
+                            id="notes"
+                            placeholder="输入备注信息"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label
+                            >TSH<br /><span style="font-size: 12px; font-weight: normal"
+                                >促甲状腺激素</span
+                            ></label
+                        >
+                        <input
+                            type="number"
+                            id="tsh"
+                            step="0.01"
+                            placeholder="直接输入数值"
+                        />
+                        <div
+                            data-id="tsh"
+                            class="form-hint"
+                            onclick="openModalToReference('tsh', 'TSH')"
+                            style="cursor: pointer; color: #4caf50"
+                        ></div>
+                    </div>
+                    <div class="form-group">
+                        <label
+                            >FT3<br /><span style="font-size: 12px; font-weight: normal"
+                                >游离三碘甲状腺原氨酸</span
+                            ></label
+                        >
+                        <input
+                            type="number"
+                            id="ft3"
+                            step="0.01"
+                            placeholder="游离三碘甲状腺原氨酸"
+                        />
+                        <div
+                            data-id="ft3"
+                            class="form-hint"
+                            onclick="openModalToReference('ft3', 'FT3')"
+                            style="cursor: pointer; color: #4caf50"
+                        ></div>
+                    </div>
+                    <div class="form-group">
+                        <label
+                            >FT4<br /><span style="font-size: 12px; font-weight: normal"
+                                >游离甲状腺素</span
+                            ></label
+                        >
+                        <input
+                            type="number"
+                            id="ft4"
+                            step="0.01"
+                            placeholder="游离甲状腺素"
+                        />
+                        <div
+                            data-id="ft4"
+                            class="form-hint"
+                            onclick="openModalToReference('ft4', 'FT4')"
+                            style="cursor: pointer; color: #4caf50"
+                        ></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label
+                            >TG<br /><span style="font-size: 12px; font-weight: normal"
+                                >甲状腺球蛋白</span
+                            ></label
+                        >
+                        <input
+                            type="number"
+                            id="tg"
+                            step="0.01"
+                            placeholder="甲状腺球蛋白"
+                        />
+                        <div
+                            data-id="tg"
+                            class="form-hint"
+                            onclick="openModalToReference('tg', 'TG')"
+                            style="cursor: pointer; color: #4caf50"
+                        ></div>
+                    </div>
+                    <div class="form-group">
+                        <label
+                            >A-TG<br /><span style="font-size: 12px; font-weight: normal"
+                                >抗甲状腺球蛋白抗体</span
+                            ></label
+                        >
+                        <input
+                            type="number"
+                            id="atg"
+                            step="0.01"
+                            placeholder="抗甲状腺球蛋白抗体"
+                        />
+                        <div
+                            data-id="atg"
+                            class="form-hint"
+                            onclick="openModalToReference('atg', 'A-TG')"
+                            style="cursor: pointer; color: #4caf50"
+                        ></div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button
+                        class="btn-add"
+                        onclick="addRecord()"
+                    >
+                        保存记录
+                    </button>
+                    <button
+                        onclick="clearForm()"
+                        style="background: #666"
+                    >
+                        清空表单
+                    </button>
+                    <button
+                        onclick="exportData()"
+                        style="background: #2196f3"
+                    >
+                        导出数据
+                    </button>
+                </div>
+            </div>
+
+            <h2
+                style="cursor: pointer"
+                onclick="saveData()"
+            >
+                📊 检查记录表
+            </h2>
+            <div id="tableContainer"></div>
+        </div>
+
+        <script>
+            /* 检查记录表 */
+            let records = [];
+            let currentEditField = '';
+            let referenceData = {
+                tsh: { name: 'TSH', range: '0.6-4.9', unit: 'mIU/L' },
+                ft3: { name: 'FT3', range: '4-6.1', unit: 'pmol/L' },
+                ft4: { name: 'FT4', range: '8.5-14.5', unit: 'pmol/L' },
+                tg: { name: 'TG', range: '1.59-50.03', unit: 'ng/mL' },
+                atg: { name: 'A-TG', range: '<4', unit: 'IU/mL' },
+            };
+
+            function openModalToReference(fieldId, fieldName) {
+                const range = referenceData[fieldId] ? referenceData[fieldId].range : range;
+                const unit = referenceData[fieldId] ? referenceData[fieldId].unit : unit;
+
+                currentEditField = fieldId;
+                document.getElementById('modalTitleToReference').textContent = `编辑 ${fieldName}`;
+
+                document.getElementById('modalRange').value = range;
+                document.getElementById('modalUnit').value = unit;
+
+                document.getElementById('editReferenceModal').style.display = 'block';
+                document.getElementById('modalRange').focus();
+            }
+
+            function closeModalToReference() {
+                document.getElementById('editReferenceModal').style.display = 'none';
+                currentEditField = '';
+            }
+
+            function confirmEditToReference() {
+                const range = document.getElementById('modalRange').value;
+                const unit = document.getElementById('modalUnit').value;
+
+                if (currentEditField) {
+                    // 更新参考数据
+                    if (referenceData[currentEditField]) {
+                        referenceData[currentEditField].range = range;
+                        referenceData[currentEditField].unit = unit;
+                    }
+
+                    // 更新表单下方的提示信息
+                    updateFormHint(currentEditField, range, unit);
+
+                    fetch('/api/saveReferenceData', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(referenceData),
+                    });
+                }
+                closeModalToReference();
+            }
+
+            function updateFormHint(fieldId, range, unit) {
+                const formGroups = document.querySelectorAll('.form-group');
+                formGroups.forEach((group) => {
+                    const input = group.querySelector('input[type="number"]');
+                    if (input && input.id === fieldId) {
+                        const hint = group.querySelector('.form-hint');
+                        if (hint) {
+                            hint.textContent = `参考值: ${range} | 单位: ${unit} `;
+                        }
+                    }
+                });
+            }
+
+            window.onclick = function (event) {
+                const referenceModal = document.getElementById('editReferenceModal');
+                const recordModal = document.getElementById('editRecordModal');
+
+                if (event.target == referenceModal) {
+                    closeModalToReference();
+                }
+
+                if (event.target == recordModal) {
+                    closeModalToRecord();
+                }
+            };
+
+            // 页面加载时设置检查时间为当日
+            window.addEventListener('load', () => {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('checkTime').value = today;
+
+                loadData();
+            });
+
+            function loadData() {
+                fetch('/data.json')
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (Array.isArray(data)) {
+                            records = data;
+                        } else {
+                            records = [data];
+                        }
+                        renderTable();
+                    })
+                    .catch((err) => {
+                        console.error('加载失败:', err);
+                        records = [];
+                        renderTable();
+                    });
+
+                fetch('/reference.json')
+                    .then((res) => res.json())
+                    .then((data) => {
+                        referenceData = data;
+                        renderReference();
+                    })
+                    .catch((err) => {
+                        console.error('加载失败:', err);
+                        referenceData = {
+                            tsh: { name: 'TSH', range: '0.6-4.9', unit: 'mIU/L' },
+                            ft3: { name: 'FT3', range: '4-6.1', unit: 'pmol/L' },
+                            ft4: { name: 'FT4', range: '8.5-14.5', unit: 'pmol/L' },
+                            tg: { name: 'TG', range: '1.59-50.03', unit: 'ng/mL' },
+                            atg: { name: 'A-TG', range: '<4', unit: 'IU/mL' },
+                        };
+                        renderReference();
+                    });
+            }
+
+            function addRecord() {
+                const record = {
+                    id: Date.now(),
+                    timestamp: new Date().toLocaleString('zh-CN'),
+                    checkTime: document.getElementById('checkTime').value,
+                    notes: document.getElementById('notes').value,
+                    tsh: {
+                        name: 'TSH',
+                        des: '促甲状腺激素',
+                        value: document.getElementById('tsh').value,
+                        range: referenceData.tsh.range,
+                        unit: referenceData.tsh.unit,
+                    },
+                    ft3: {
+                        name: 'FT3',
+                        des: '游离三碘甲状腺原氨酸',
+                        value: document.getElementById('ft3').value,
+                        range: referenceData.ft3.range,
+                        unit: referenceData.ft3.unit,
+                    },
+                    ft4: {
+                        name: 'FT4',
+                        des: '游离甲状腺素',
+                        value: document.getElementById('ft4').value,
+                        range: referenceData.ft4.range,
+                        unit: referenceData.ft4.unit,
+                    },
+                    tg: {
+                        name: 'TG',
+                        des: '甲状腺球蛋白',
+                        value: document.getElementById('tg').value,
+                        range: referenceData.tg.range,
+                        unit: referenceData.tg.unit,
+                    },
+                    atg: {
+                        name: 'A-TG',
+                        des: '抗甲状腺球蛋白抗体',
+                        value: document.getElementById('atg').value,
+                        range: referenceData.atg.range,
+                        unit: referenceData.atg.unit,
+                    },
+                };
+
+                if (!record.checkTime) {
+                    showMessage('请填写检查时间', 'error');
+                    return;
+                }
+
+                records.unshift(record);
+                saveData();
+                clearForm();
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('checkTime').value = today;
+                renderTable();
+                showMessage('记录已保存', 'success');
+            }
+
+            function deleteRecord(id) {
+                if (confirm('确定要删除此记录吗？')) {
+                    records = records.filter((r) => r.id !== id);
+                    saveData();
+                    renderTable();
+                    showMessage('记录已删除', 'success');
+                }
+            }
+
+            function openModalToRecord(fieldId, target) {
+                currentEditField = fieldId;
+                document.getElementById(
+                    'modalTitleToRecord'
+                ).textContent = `编辑 ${target.checkTime}`;
+
+                document.getElementById('checkTimeToRecord').value = target.checkTime;
+                document.getElementById('notesToRecord').value = target.notes;
+                document.getElementById('tshToRecord').value = target.tsh && target.tsh.value;
+                document.getElementById('ft3ToRecord').value = target.ft3 && target.ft3.value;
+                document.getElementById('ft4ToRecord').value = target.ft4 && target.ft4.value;
+                document.getElementById('tgToRecord').value = target.tg && target.tg.value;
+                document.getElementById('atgToRecord').value = target.atg && target.atg.value;
+
+                document.getElementById('editRecordModal').style.display = 'block';
+            }
+
+            function closeModalToRecord() {
+                document.getElementById('editRecordModal').style.display = 'none';
+                currentEditField = '';
+            }
+
+            function confirmEditToRecord() {
+                const checkTime = document.getElementById('checkTimeToRecord').value;
+                const notes = document.getElementById('notesToRecord').value;
+                const tsh = document.getElementById('tshToRecord').value;
+                const ft3 = document.getElementById('ft3ToRecord').value;
+                const ft4 = document.getElementById('ft4ToRecord').value;
+                const tg = document.getElementById('tgToRecord').value;
+                const atg = document.getElementById('atgToRecord').value;
+
+                if (currentEditField) {
+                    records = records.map((record) => {
+                        if (record.id === currentEditField) {
+                            return {
+                                ...record,
+                                checkTime,
+                                notes,
+                                tsh: { ...record.tsh, value: tsh },
+                                ft3: { ...record.ft3, value: ft3 },
+                                ft4: { ...record.ft4, value: ft4 },
+                                tg: { ...record.tg, value: tg },
+                                atg: { ...record.atg, value: atg },
+                            };
+                        }
+
+                        return record;
+                    });
+
+                    renderTable();
+                    saveData();
+                }
+
+                closeModalToRecord();
+            }
+
+            function editRecord(id) {
+                const current = records.find((r) => r.id === id);
+                openModalToRecord(id, current);
+            }
+
+            function recordToChartData(data) {
+                const chartData = {
+                    tsh: [],
+                    ft3: [],
+                    ft4: [],
+                    tg: [],
+                    atg: [],
+                };
+
+                // 按检查时间排序
+                const sortedRecords = [...data].sort(
+                    (a, b) => new Date(a.checkTime) - new Date(b.checkTime)
+                );
+
+                sortedRecords.forEach((record) => {
+                    chartData.tsh.push({ ...record.tsh, checkTime: record.checkTime });
+                    chartData.ft3.push({ ...record.ft3, checkTime: record.checkTime });
+                    chartData.ft4.push({ ...record.ft4, checkTime: record.checkTime });
+                    chartData.tg.push({ ...record.tg, checkTime: record.checkTime });
+                    chartData.atg.push({ ...record.atg, checkTime: record.checkTime });
+                });
+
+                return chartData;
+            }
+
+            function saveData() {
+                fetch('/api/saveData', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(records),
+                });
+
+                fetch('/api/saveChartData', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(recordToChartData(records)),
+                });
+
+                loadChartData();
+            }
+
+            function exportData() {
+                const dataStr = JSON.stringify(records, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `检查记录_${Date.now()}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+
+            function clearForm() {
+                document.getElementById('notes').value = '';
+                document.getElementById('tsh').value = '';
+                document.getElementById('ft3').value = '';
+                document.getElementById('ft4').value = '';
+                document.getElementById('tg').value = '';
+                document.getElementById('atg').value = '';
+            }
+
+            function showMessage(text, type) {
+                const msg = document.getElementById('message');
+                msg.textContent = text;
+                msg.className = `message ${type}`;
+                msg.style.display = 'block';
+                setTimeout(() => {
+                    msg.style.display = 'none';
+                }, 3000);
+            }
+
+            // 判断数值是否超出范围
+            function checkValue(target) {
+                const { value, range } = target || {};
+
+                if (!value || !range) {
+                    return { text: value || '-', icon: '', className: '' };
+                }
+
+                const numValue = parseFloat(value);
+                let status = 'normal';
+
+                if (isNaN(numValue)) {
+                    return { text: value, icon: '', className: '' };
+                }
+
+                if (range.includes('-')) {
+                    // 范围格式: 如 "0.27-4.2"
+                    const parts = range.split('-').map((p) => parseFloat(p.trim()));
+                    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                        if (numValue > parts[1]) {
+                            status = 'high';
+                        } else if (numValue < parts[0]) {
+                            status = 'low';
+                        }
+                    }
+                } else if (range.startsWith('<')) {
+                    // 范围格式: 如 "<35"
+                    const maxValue = parseFloat(range.substring(1));
+                    if (!isNaN(maxValue) && numValue > maxValue) {
+                        status = 'high';
+                    }
+                } else if (range.startsWith('>')) {
+                    // 范围格式: 如 ">0"
+                    const minValue = parseFloat(range.substring(1));
+                    if (!isNaN(minValue) && numValue < minValue) {
+                        status = 'low';
+                    }
+                }
+
+                let icon = '';
+                let className = '';
+                if (status === 'high') {
+                    icon =
+                        ' <span style="color:#ff0000; font-weight:bold; margin-left:4px;">↑</span>';
+                    className = 'style="color:#ff0000; font-weight:bold;"';
+                } else if (status === 'low') {
+                    icon =
+                        ' <span style="color:#00aa00; font-weight:bold; margin-left:4px;">↓</span>';
+                    className = 'style="color:#00aa00; font-weight:bold;"';
+                }
+
+                return { text: value, icon: icon, className: className };
+            }
+
+            function getFieldInfo(record, field) {
+                const value =
+                    typeof record[field] === 'object' ? record[field].value : record[field];
+                const range = typeof record[field] === 'object' ? record[field].range : '';
+                const unit = typeof record[field] === 'object' ? record[field].unit : '';
+                return { value, range, unit };
+            }
+
+            function renderTable() {
+                const container = document.getElementById('tableContainer');
+
+                if (records.length === 0) {
+                    container.innerHTML = '<div class="empty-state">暂无检查记录</div>';
+                    return;
+                }
+
+                let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查时间 <span style="cursor: pointer; margin:0px 5px;" onclick="renderToAsc()">↑</span><span style="cursor: pointer;" onclick="renderToDes()">↓</span></th>
+                            <th><div style="cursor: pointer;" onclick="scrollToChart('tsh')">TSH<br><span style="font-size:12px; font-weight:normal;">促甲状腺激素</span></div></th>
+                            <th><div style="cursor: pointer;" onclick="scrollToChart('ft3')">FT3<br><span style="font-size:12px; font-weight:normal;">游离三碘甲状腺原氨酸</span></div></th>
+                            <th><div style="cursor: pointer;" onclick="scrollToChart('ft4')">FT4<br><span style="font-size:12px; font-weight:normal;">游离甲状腺素</span></div></th>
+                            <th><div style="cursor: pointer;" onclick="scrollToChart('tg')">TG<br><span style="font-size:12px; font-weight:normal;">甲状腺球蛋白</span></div></th>
+                            <th><div style="cursor: pointer;" onclick="scrollToChart('atg')">A-TG<br><span style="font-size:12px; font-weight:normal;">抗甲状腺球蛋白抗体</span></div></th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+                records.forEach((record) => {
+                    const checkTime = record.checkTime || '-';
+
+                    const tsh = checkValue(record.tsh);
+                    const ft3 = checkValue(record.ft3);
+                    const ft4 = checkValue(record.ft4);
+                    const tg = checkValue(record.tg);
+                    const atg = checkValue(record.atg);
+
+                    const tshInfo = getFieldInfo(record, 'tsh');
+                    const ft3Info = getFieldInfo(record, 'ft3');
+                    const ft4Info = getFieldInfo(record, 'ft4');
+                    const tgInfo = getFieldInfo(record, 'tg');
+                    const atgInfo = getFieldInfo(record, 'atg');
+
+                    html += `
+                    <tr>
+                        <td>${checkTime}</td>
+                        <td><span ${tsh.className}>${tsh.text}${
+                        tsh.icon
+                    }</span><br><span style="font-size:11px; color:#999;">参考值: ${
+                        tshInfo.range
+                    } ${tshInfo.unit}</span></td>
+                        <td><span ${ft3.className}>${ft3.text}${
+                        ft3.icon
+                    }</span><br><span style="font-size:11px; color:#999;">参考值: ${
+                        ft3Info.range
+                    } ${ft3Info.unit}</span></td>
+                        <td><span ${ft4.className}>${ft4.text}${
+                        ft4.icon
+                    }</span><br><span style="font-size:11px; color:#999;">参考值: ${
+                        ft4Info.range
+                    } ${ft4Info.unit}</span></td>
+                        <td><span ${tg.className}>${tg.text}${
+                        tg.icon
+                    }</span><br><span style="font-size:11px; color:#999;">参考值: ${tgInfo.range} ${
+                        tgInfo.unit
+                    }</span></td>
+                        <td><span ${atg.className}>${atg.text}${
+                        atg.icon
+                    }</span><br><span style="font-size:11px; color:#999;">参考值: ${
+                        atgInfo.range
+                    } ${atgInfo.unit}</span></td>
+                        <td><div style="width: 90px;">${record.notes || '-'}</div></td>
+                        <td><button class="btn-edit" onclick="editRecord(${
+                            record.id
+                        })">编辑</button><button class="btn-delete" onclick="deleteRecord(${
+                        record.id
+                    })">删除</button></td>
+                    </tr>
+                `;
+                });
+
+                html += `
+                    </tbody>
+                </table>
+            `;
+
+                container.innerHTML = html;
+            }
+
+            function renderReference() {
+                for (const fieldId in referenceData) {
+                    const data = referenceData[fieldId];
+                    updateFormHint(fieldId, data.range, data.unit);
+                }
+            }
+
+            function renderToAsc() {
+                records.sort((a, b) => new Date(a.checkTime) - new Date(b.checkTime));
+                renderTable();
+            }
+
+            function renderToDes() {
+                records.sort((a, b) => new Date(b.checkTime) - new Date(a.checkTime));
+                renderTable();
+            }
+
+            function scrollToChart(elementId) {
+                const element = document.getElementById(`chart-container-${elementId}`);
+
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            loadData();
+        </script>
+
+        <div
+            class="container"
+            style="margin-top: 10px"
+        >
+            <h2>📈 检查数据图表</h2>
+            <div
+                id="chart-container-tsh"
+                class="chart-container"
+            ></div>
+            <div
+                id="chart-container-ft3"
+                class="chart-container"
+            ></div>
+            <div
+                id="chart-container-ft4"
+                class="chart-container"
+            ></div>
+            <div
+                id="chart-container-tg"
+                class="chart-container"
+            ></div>
+            <div
+                id="chart-container-atg"
+                class="chart-container"
+            ></div>
+        </div>
+        <script>
+            window.addEventListener('load', () => {
+                loadChartData();
+            });
+
+            function loadChartData() {
+                fetch('/api/getChartData', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        renderChart(data);
+                    })
+                    .catch((err) => {
+                        console.error('加载失败:', err);
+                    });
+            }
+
+            function renderChart(chartData) {
+                if (!chartData) return;
+
+                Object.entries(chartData).forEach(([key, value]) => {
+                    const containerId = `chart-container-${key}`;
+                    const container = document.getElementById(containerId);
+
+                    if (!container) return;
+
+                    const chartInstance = echarts.init(container);
+                    const item = value[0] || {};
+
+                    const option = {
+                        title: {
+                            text: `${item.des} (${item.name}) 变化`,
+                            left: 'center',
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: value.map((item) => item.checkTime),
+                        },
+                        yAxis: {
+                            type: 'value',
+                            name: `${item.name} (${item.unit})`,
+                            axisLabel: {
+                                formatter: `{value} ${item.unit}`,
+                            },
+                        },
+                        series: [
+                            {
+                                name: item.name,
+                                type: 'line',
+                                data: value.map((item) => item.value),
+                                smooth: true,
+                                lineStyle: {
+                                    color: '#4CAF50',
+                                },
+                                symbol: 'circle',
+                                symbolSize: 8,
+                            },
+                        ],
+                    };
+
+                    chartInstance.setOption(option);
+                });
+            }
+
+            window.addEventListener('resize', () => {
+                renderChart();
+            });
+        </script>
+    </body>
+</html>
